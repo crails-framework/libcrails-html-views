@@ -1,4 +1,5 @@
 #include "html_template.hpp"
+#include <crails/params.hpp>
 #include <sstream>
 
 using namespace Crails;
@@ -53,4 +54,23 @@ string HtmlTemplate::tag(const string& name, const map<string, string>& attrs, Y
     html_stream << content();
   html_stream << "</" << name << '>';
   return html_stream.str();
+}
+
+string Crails::HtmlTemplate::form(const std::map<std::string, std::string>& attrs, Crails::HtmlTemplate::Yieldable content) const
+{
+  return tag("form", attrs, [this, content]()
+  {
+    stringstream html_stream;
+
+    if (vars.find("params") != vars.end())
+    {
+      Params& params = *(cast<Params*>(vars, "params"));
+      string  csrf_token = params.get_session()["csrf-token"].defaults_to<string>("");
+
+      html_stream << tag("input", {{"type","hidden"},{"name","csrf-token"},{"value",csrf_token}});
+    }
+    if (content)
+      html_stream << content();
+    return html_stream.str();
+  });
 }

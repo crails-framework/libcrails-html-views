@@ -21,6 +21,7 @@ namespace Crails
     static std::string tag(const std::string& name, const std::map<std::string, std::string>& attrs);
     static std::string tag(const std::string& name, const std::map<std::string, std::string>& attrs, Yieldable);
     static std::string tag(const std::string& name, Yieldable);
+    std::string        form(const std::map<std::string, std::string>& attrs, Yieldable) const;
   };
 }
 
