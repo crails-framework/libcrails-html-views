@@ -65,7 +65,7 @@ string Crails::HtmlTemplate::form(const std::map<std::string, std::string>& attr
     if (vars.find("params") != vars.end())
     {
       Params& params = *(cast<Params*>(vars, "params"));
-      string  csrf_token = params.get_session()["csrf-token"].defaults_to<string>("");
+      string  csrf_token = params.get_session()["csrf_token"].defaults_to<string>("");
 
       html_stream << tag("input", {{"type","hidden"},{"name","csrf-token"},{"value",csrf_token}});
     }
