@@ -1,6 +1,7 @@
 #include "html_template.hpp"
 #include <crails/params.hpp>
 #include <sstream>
+#include <regex>
 
 using namespace Crails;
 using namespace std;
@@ -56,12 +57,35 @@ string HtmlTemplate::tag(const string& name, const map<string, string>& attrs, Y
   return html_stream.str();
 }
 
+static std::string get_inline_method_for_form(const std::map<std::string, std::string>& attrs)
+{
+  static const regex put_method_matcher("put", regex_constants::icase);
+  static const regex delete_method_matcher("delete", regex_constants::icase);
+  string inline_method;
+
+  if (attrs.find("method") != attrs.end())
+  {
+    if (regex_match(attrs.at("method"), put_method_matcher))
+      inline_method = "PUT";
+    else if (regex_match(attrs.at("method"), delete_method_matcher))
+      inline_method = "DELETE";
+  }
+  return inline_method;
+}
+
 string Crails::HtmlTemplate::form(const std::map<std::string, std::string>& attrs, Crails::HtmlTemplate::Yieldable content) const
 {
-  return tag("form", attrs, [this, content]()
+  map<string, string> definitive_attrs = attrs;
+  string inline_method = get_inline_method_for_form(attrs);
+
+  if (inline_method.length() > 0)
+    definitive_attrs["method"] = "post";
+  return tag("form", definitive_attrs, [this, inline_method, content]()
   {
     stringstream html_stream;
 
+    if (inline_method.length() > 0)
+      html_stream << tag("input", {{"type","hidden"},{"name","_method"},{"value",inline_method}});
     if (vars.find("params") != vars.end())
     {
       Params& params = *(cast<Params*>(vars, "params"));
