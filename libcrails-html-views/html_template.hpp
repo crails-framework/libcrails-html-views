@@ -4,6 +4,7 @@
 # include <crails/template.hpp>
 # include <map>
 # include <functional>
+# include <boost/lexical_cast.hpp>
 
 namespace Crails
 {
@@ -22,7 +23,32 @@ namespace Crails
     static std::string tag(const std::string& name, const std::map<std::string, std::string>& attrs, Yieldable);
     static std::string tag(const std::string& name, Yieldable);
     std::string        form(const std::map<std::string, std::string>& attrs, Yieldable) const;
-  };
+
+    template<typename MODEL>
+    std::string form_for(const MODEL& model, const std::string& route, Yieldable yieldable) const
+    {
+      return form_for(model, route, {}, yieldable);
+    }
+
+    template<typename MODEL>
+    std::string form_for(const MODEL& model, const std::string& route, std::map<std::string, std::string> attrs, Yieldable yieldable) const
+    {
+      auto method_and_route = model.is_persistent()
+        ? std::pair<std::string, std::string>{"put",  route + boost::lexical_cast<std::string>(model.get_id())}
+        : std::pair<std::string, std::string>{"post", route};
+
+      if (attrs.find("method") == attrs.end())
+        attrs["method"] = method_and_route.first;
+      if (attrs.find("action") == attrs.end())
+        attrs["action"] = method_and_route.second;
+      return form(attrs, yieldable);
+    }
+
+    std::string text_field(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
+    std::string text_area(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
+    std::string date_field(const std::string& name, std::time_t value, std::map<std::string, std::string> attrs = {}) const;
+    std::string password_field(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
+    template<typename VALUE> std::string number_field(const std::string& name, VALUE value, std::map<std::string, std::string> attrs = {}) { attrs.merge(std::map<std::string,std::string>{{"type","number"},{"name",name},{"value",boost::lexical_cast<std::string>(value)}}); return tag("input", attrs); }  };
 }
 
 #endif

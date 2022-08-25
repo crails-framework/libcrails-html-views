@@ -2,6 +2,9 @@
 #include <crails/params.hpp>
 #include <sstream>
 #include <regex>
+#include <chrono>
+#include <ctime> // std::localtime
+#include <iomanip> // std::put_time
 
 using namespace Crails;
 using namespace std;
@@ -97,4 +100,33 @@ string Crails::HtmlTemplate::form(const std::map<std::string, std::string>& attr
       html_stream << content();
     return html_stream.str();
   });
+}
+
+string Crails::HtmlTemplate::text_field(const std::string& name, const std::string& value, std::map<std::string,std::string> attrs) const
+{
+  attrs.merge(map<string,string>{{"type","text"},{"name",name},{"value",value}});
+  return tag("input", attrs);
+}
+
+string Crails::HtmlTemplate::text_area(const std::string& name, const std::string& value, std::map<std::string,std::string> attrs) const
+{
+  attrs.merge(map<string,string>{{"name",name}});
+  return tag("textarea", attrs, [&value]() { return html_escape(value); });
+}
+
+string Crails::HtmlTemplate::password_field(const std::string& name, const std::string& value, std::map<std::string,std::string> attrs) const
+{
+  attrs.merge(map<string,string>{{"type","password"},{"name",name},{"value",value}});
+  return tag("input", attrs);
+}
+
+string Crails::HtmlTemplate::date_field(const string& name, time_t value, std::map<std::string,std::string> attrs) const
+{
+  static const string format("%Y-%m-%d");
+  stringstream value_stream;
+
+  if (value != 0)
+    value_stream << put_time(localtime(&value), format.c_str());
+  attrs.merge(map<string,string>{{"type","date"},{"name",name},{"value",value_stream.str()}});
+  return tag("input", attrs);
 }
