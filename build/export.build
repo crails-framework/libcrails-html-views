@@ -3,4 +3,4 @@ $out_root/
   include libcrails-html-views/
 }
 
-export $out_root/crails/$import.target
+export $out_root/libcrails-html-views/$import.target
