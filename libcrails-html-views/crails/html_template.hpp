@@ -34,7 +34,7 @@ namespace Crails
     std::string form_for(const MODEL& model, const std::string& route, std::map<std::string, std::string> attrs, Yieldable yieldable) const
     {
       auto method_and_route = model.is_persistent()
-        ? std::pair<std::string, std::string>{"put",  route + boost::lexical_cast<std::string>(model.get_id())}
+        ? std::pair<std::string, std::string>{"put",  route + '/' + boost::lexical_cast<std::string>(model.get_id())}
         : std::pair<std::string, std::string>{"post", route};
 
       if (attrs.find("method") == attrs.end())
