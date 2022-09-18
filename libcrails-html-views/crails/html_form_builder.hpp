@@ -20,6 +20,7 @@ namespace Crails
     template<typename METHOD> std::string date_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.date_field(scoped_name(name), (model.*method)(), attrs); }
     template<typename METHOD> std::string number_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.number_field(scoped_name(name), (model.*method)(), attrs); }
     template<typename METHOD> std::string password_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.password_field(scoped_name(name), (model.*method)(), attrs); }
+    template<typename VALUE, typename METHOD> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.select_field(scoped_name(name), options, (model.*method)(), attrs); }
   };
 }
 

@@ -48,7 +48,28 @@ namespace Crails
     std::string text_area(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
     std::string date_field(const std::string& name, std::time_t value, std::map<std::string, std::string> attrs = {}) const;
     std::string password_field(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
-    template<typename VALUE> std::string number_field(const std::string& name, VALUE value, std::map<std::string, std::string> attrs = {}) { attrs.merge(std::map<std::string,std::string>{{"type","number"},{"name",name},{"value",boost::lexical_cast<std::string>(value)}}); return tag("input", attrs); }  };
+    template<typename VALUE> std::string number_field(const std::string& name, VALUE value, std::map<std::string, std::string> attrs = {}) { attrs.merge(std::map<std::string,std::string>{{"type","number"},{"name",name},{"value",boost::lexical_cast<std::string>(value)}}); return tag("input", attrs); }
+
+    template<typename VALUE> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, VALUE selected_value, std::map<std::string, std::string> attrs = {})
+    {
+      attrs["name"] = name;
+      return tag("select", attrs, [&]() -> std::string
+      {
+        std::string result;
+        for (auto it = options.begin() ; it != options.end() ; ++it)
+        {
+          std::map<std::string, std::string> option_attrs{
+            {"value", boost::lexical_cast<std::string>(it->first)}
+          };
+
+          if (it->first == selected_value)
+            option_attrs["selected"] = "selected";
+          result += tag("option", option_attrs, [it]() { return it->second; });
+        }
+        return result;
+      });
+    }
+  };
 }
 
 #endif
