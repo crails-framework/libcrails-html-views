@@ -23,6 +23,9 @@ namespace Crails
     static std::string tag(const std::string& name, const std::map<std::string, std::string>& attrs, Yieldable);
     static std::string tag(const std::string& name, Yieldable);
     std::string        form(const std::map<std::string, std::string>& attrs, Yieldable) const;
+    std::string        link(const std::string& url, std::string label = "", std::map<std::string, std::string> attrs = {}) const;
+    std::string        link(const std::string& url, std::map<std::string, std::string> attrs, Yieldable) const;
+    std::string        link(const std::string& url, Yieldable content) const { return link(url, {}, content); }
 
     template<typename MODEL>
     std::string form_for(const MODEL& model, const std::string& route, Yieldable yieldable) const

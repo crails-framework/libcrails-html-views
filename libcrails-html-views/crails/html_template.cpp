@@ -76,6 +76,43 @@ static std::string get_inline_method_for_form(const std::map<std::string, std::s
   return inline_method;
 }
 
+static std::string form_link(const HtmlTemplate& tpl, const std::string& url, const std::string& label, std::map<std::string,std::string> attrs)
+{
+  static const string submit_javascript = "this.parentNode.submit()";
+  auto method = attrs.extract("method").mapped();
+  auto confirm_message = attrs.find("confirm");
+
+  if (confirm_message == attrs.end())
+    attrs["onclick"] = "javascript:" + submit_javascript;
+  else
+  {
+    attrs["data-confirm"] = confirm_message->second;
+    attrs["onclick"] = "javascript:if(confirm(this.dataset.confirm)){" + submit_javascript + '}';
+    attrs.erase(confirm_message);
+  }
+  return tpl.form({{"method",method}, {"action",url}}, [&label, &attrs]() -> std::string
+  {
+    return HtmlTemplate::tag("a", attrs, [&label]() { return label; });
+  });
+}
+
+string Crails::HtmlTemplate::link(const std::string& url, std::string label, std::map<std::string, std::string> attrs) const
+{
+  string method = attrs.find("method") != attrs.end() ? attrs.at("method") : "GET";
+
+  if (label.length() == 0)
+    label = url;
+  if (method != "GET" && method != "get")
+    return form_link(*this, url, label, attrs);
+  attrs["href"] = url;
+  return tag("a", attrs, [&label]() { return label; });
+}
+
+string Crails::HtmlTemplate::link(const std::string& url, std::map<std::string, std::string> attrs, Yieldable content) const
+{
+  return link(url, content(), attrs);
+}
+
 string Crails::HtmlTemplate::form(const std::map<std::string, std::string>& attrs, Crails::HtmlTemplate::Yieldable content) const
 {
   map<string, string> definitive_attrs = attrs;
