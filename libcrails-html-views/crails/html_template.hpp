@@ -13,8 +13,8 @@ namespace Crails
   public:
     typedef std::function<std::string()> Yieldable;
 
-    HtmlTemplate(const Renderer* renderer, SharedVars& vars) :
-      Template(renderer, vars)
+    HtmlTemplate(const Renderer& renderer, RenderTarget& target, SharedVars& vars) :
+      Template(renderer, target, vars)
     {
     }
     
@@ -51,9 +51,9 @@ namespace Crails
     std::string text_area(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
     std::string date_field(const std::string& name, std::time_t value, std::map<std::string, std::string> attrs = {}) const;
     std::string password_field(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
-    template<typename VALUE> std::string number_field(const std::string& name, VALUE value, std::map<std::string, std::string> attrs = {}) { attrs.merge(std::map<std::string,std::string>{{"type","number"},{"name",name},{"value",boost::lexical_cast<std::string>(value)}}); return tag("input", attrs); }
+    template<typename VALUE> std::string number_field(const std::string& name, VALUE value, std::map<std::string, std::string> attrs = {}) const { attrs.merge(std::map<std::string,std::string>{{"type","number"},{"name",name},{"value",boost::lexical_cast<std::string>(value)}}); return tag("input", attrs); }
 
-    template<typename VALUE> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, VALUE selected_value, std::map<std::string, std::string> attrs = {})
+    template<typename VALUE> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, VALUE selected_value, std::map<std::string, std::string> attrs = {}) const
     {
       attrs["name"] = name;
       return tag("select", attrs, [&]() -> std::string

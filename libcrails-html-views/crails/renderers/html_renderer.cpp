@@ -15,7 +15,6 @@ bool HtmlRenderer::can_render(const std::string& accept_header, const std::strin
 void HtmlRenderer::render_template(const std::string& view, RenderTarget& target, SharedVars& vars) const
 {
   auto   tpl       = templates.find(view);
-  string html_view = (*tpl).second(this, vars);
   string layout    = cast<std::string>(vars, "layout", "");
 
   target.set_header("Content-Type", "text/html");
@@ -23,12 +22,15 @@ void HtmlRenderer::render_template(const std::string& view, RenderTarget& target
   {
     if (can_render("text/html", layout))
     {
-      vars["yield"] = html_view.c_str();
+      RenderString yield;
+
+      tpl->second(*this, yield, vars);
+      vars["yield"] = yield.c_str();
       render_template(layout, target, vars);
     }
     else
       throw MissingTemplate(layout);
   }
   else
-    target.set_body(html_view.c_str(), html_view.length());
+    tpl->second(*this, target, vars);
 }
