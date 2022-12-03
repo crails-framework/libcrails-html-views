@@ -10,7 +10,7 @@ namespace Crails
   {
     HtmlTemplate& html_template;
     MODEL&        model;
-    std::string scoped_name(const std::string& name) const { return MODEL::scope + '[' + name + ']'; }
+    std::string scoped_name(const std::string& name) const { return std::string(MODEL::scope) + '[' + name + ']'; }
   public:
     FormBuilder(HtmlTemplate* parent, MODEL& model) : html_template(*parent), model(model) {}
     std::string label_for(const std::string& name) const { return label_for(name, [&name]() { return name; }); }
