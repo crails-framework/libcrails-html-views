@@ -4,6 +4,8 @@
 # include <crails/template.hpp>
 # include <map>
 # include <functional>
+# include <algorithm>
+# include <set>
 # include <boost/lexical_cast.hpp>
 
 namespace Crails
@@ -52,25 +54,65 @@ namespace Crails
     std::string date_field(const std::string& name, std::time_t value, std::map<std::string, std::string> attrs = {}) const;
     std::string password_field(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
     template<typename VALUE> std::string number_field(const std::string& name, VALUE value, std::map<std::string, std::string> attrs = {}) const { attrs.merge(std::map<std::string,std::string>{{"type","number"},{"name",name},{"value",boost::lexical_cast<std::string>(value)}}); return tag("input", attrs); }
+    std::string boolean_field(const std::string& name, bool value, std::map<std::string, std::string> attrs = {}) const;
 
     template<typename VALUE> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, VALUE selected_value, std::map<std::string, std::string> attrs = {}) const
     {
-      attrs["name"] = name;
-      return tag("select", attrs, [&]() -> std::string
+      Yieldable callback;
+      std::function<bool(VALUE)> is_selected = [selected_value](VALUE value)
       {
-        std::string result;
-        for (auto it = options.begin() ; it != options.end() ; ++it)
-        {
-          std::map<std::string, std::string> option_attrs{
-            {"value", boost::lexical_cast<std::string>(it->first)}
-          };
+        return value == selected_value;
+      };
 
-          if (it->first == selected_value)
-            option_attrs["selected"] = "selected";
-          result += tag("option", option_attrs, [it]() { return it->second; });
-        }
-        return result;
-      });
+      attrs["name"] = name;
+      callback = std::bind(&HtmlTemplate::render_select_options<VALUE>, options, is_selected);
+      return tag("select", attrs, callback);
+    }
+
+    template<typename VALUE> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, const std::vector<VALUE>& selected_values, std::map<std::string, std::string> attrs = {}) const
+    {
+      Yieldable callback;
+      std::function<bool(VALUE)> is_selected = [&selected_values](VALUE value)
+      {
+        return std::find(selected_values.begin(), selected_values.end(), value) != selected_values.end();
+      };
+
+      attrs["name"] = name + "[]";
+      attrs["multiple"] = "multiple";
+      callback = std::bind(&HtmlTemplate::render_select_options<VALUE>, options, is_selected);
+      return tag("select", attrs, callback);
+    }
+
+    template<typename VALUE> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, const std::set<VALUE>& selected_values, std::map<std::string, std::string> attrs = {}) const
+    {
+      Yieldable callback;
+      std::function<bool(VALUE)> is_selected = [&selected_values](VALUE value) -> bool
+      {
+        return selected_values.count(value);
+      };
+
+      attrs["name"] = name + "[]";
+      attrs["multiple"] = "multiple";
+      callback = std::bind(&HtmlTemplate::render_select_options<VALUE>, options, is_selected);
+      return tag("select", attrs, callback);
+    }
+
+  private:
+    template<typename VALUE> static std::string render_select_options(const std::map<VALUE, std::string>& options, std::function<bool(VALUE)> is_selected)
+    {
+      std::string result;
+
+      for (auto it = options.begin() ; it != options.end() ; ++it)
+      {
+        std::map<std::string, std::string> option_attrs{
+          {"value", boost::lexical_cast<std::string>(it->first)}
+        };
+
+        if (is_selected(it->first))
+          option_attrs["selected"] = "selected";
+        result += tag("option", option_attrs, [it]() { return it->second; });
+      }
+      return result;
     }
   };
 }

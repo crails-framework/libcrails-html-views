@@ -82,8 +82,9 @@ static std::string form_link(const HtmlTemplate& tpl, const std::string& url, co
   auto method = attrs.extract("method").mapped();
   auto confirm_message = attrs.find("confirm");
 
+  attrs["href"] = url;
   if (confirm_message == attrs.end())
-    attrs["onclick"] = "javascript:" + submit_javascript;
+    attrs["onclick"] = "javascript:" + submit_javascript + ";return false";
   else
   {
     attrs["data-confirm"] = confirm_message->second;
@@ -165,5 +166,13 @@ string Crails::HtmlTemplate::date_field(const string& name, time_t value, std::m
   if (value != 0)
     value_stream << put_time(localtime(&value), format.c_str());
   attrs.merge(map<string,string>{{"type","date"},{"name",name},{"value",value_stream.str()}});
+  return tag("input", attrs);
+}
+
+string Crails::HtmlTemplate::boolean_field(const string& name, bool value, std::map<std::string,std::string> attrs) const
+{
+  attrs.merge(map<string,string>{{"type","checkbox"},{"name",name}});
+  if (value)
+    attrs.emplace("checked", "checked");
   return tag("input", attrs);
 }
