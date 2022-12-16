@@ -8,8 +8,6 @@ namespace Crails
   class HtmlRenderer : public Renderer
   {
   public:
-    HtmlRenderer();
-
     bool can_render(const std::string& accept_header, const std::string& view) const override;
     void render_template(const std::string& view, RenderTarget&, SharedVars& vars) const override;
   };
