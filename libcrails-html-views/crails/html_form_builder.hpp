@@ -15,11 +15,13 @@ namespace Crails
     std::string scoped_name(const std::string& name) const { return std::string(MODEL::scope) + '[' + name + ']'; }
     std::string label_for(const std::string& name) const { return label_for(name, [&name]() { return name; }); }
     std::string label_for(const std::string& name, HtmlTemplate::Yieldable yieldable) const { return html_template.tag("label", {{"for",scoped_name(name)}}, yieldable); }
+    std::string hidden_field(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const { return html_template.hidden_field(scoped_name(name), value, attrs); }
     std::string text_field(const std::string& name, const std::string& value, std::map<std::string,std::string> attrs = {}) const { return html_template.text_field(scoped_name(name), value, attrs); }
     std::string text_area(const std::string& name, const std::string& value, std::map<std::string,std::string> attrs = {}) const { return html_template.text_area(scoped_name(name), value, attrs); }
     std::string date_field(const std::string& name, std::time_t value, std::map<std::string,std::string> attrs = {}) const { return html_template.date_field(scoped_name(name), value, attrs); }
     std::string boolean_field(const std::string& name, bool value, std::map<std::string,std::string> attrs = {}) const { return html_template.boolean_field(scoped_name(name), value, attrs); }
     std::string password_field(const std::string& name, const std::string& value, std::map<std::string,std::string> attrs = {}) const { return html_template.password_field(scoped_name(name), value, attrs); }
+    template<typename METHOD> std::string hidden_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.hidden_field(scoped_name(name), (model.*method())(), attrs); }
     template<typename METHOD> std::string text_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.text_field(scoped_name(name), (model.*method)(), attrs); }
     template<typename METHOD> std::string text_area(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.text_area(scoped_name(name), (model.*method)(), attrs); }
     template<typename METHOD> std::string date_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.date_field(scoped_name(name), (model.*method)(), attrs); }

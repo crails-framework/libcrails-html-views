@@ -49,6 +49,7 @@ namespace Crails
       return form(attrs, yieldable);
     }
 
+    std::string hidden_field(const std::string& name, const std::string& value, const std::map<std::string, std::string> attrs = {}) const;
     std::string text_field(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
     std::string text_area(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
     std::string date_field(const std::string& name, std::time_t value, std::map<std::string, std::string> attrs = {}) const;

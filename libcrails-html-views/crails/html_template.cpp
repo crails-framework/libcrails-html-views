@@ -140,6 +140,12 @@ string Crails::HtmlTemplate::form(const std::map<std::string, std::string>& attr
   });
 }
 
+string Crails::HtmlTemplate::hidden_field(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs) const
+{
+  attrs.merge(map<string,string>{{"type","hidden"},{"name",name},{"value",value}});
+  return tag("input", attrs);
+}
+
 string Crails::HtmlTemplate::text_field(const std::string& name, const std::string& value, std::map<std::string,std::string> attrs) const
 {
   attrs.merge(map<string,string>{{"type","text"},{"name",name},{"value",value}});
