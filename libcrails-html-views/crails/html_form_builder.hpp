@@ -9,9 +9,9 @@ namespace Crails
   class FormBuilder
   {
     HtmlTemplate& html_template;
-    MODEL&        model;
+    const MODEL&  model;
   public:
-    FormBuilder(HtmlTemplate* parent, MODEL& model) : html_template(*parent), model(model) {}
+    FormBuilder(HtmlTemplate* parent, const MODEL& model) : html_template(*parent), model(model) {}
     std::string scoped_name(const std::string& name) const { return std::string(MODEL::scope) + '[' + name + ']'; }
     std::string label_for(const std::string& name) const { return label_for(name, [&name]() { return name; }); }
     std::string label_for(const std::string& name, HtmlTemplate::Yieldable yieldable) const { return html_template.tag("label", {{"for",scoped_name(name)}}, yieldable); }
