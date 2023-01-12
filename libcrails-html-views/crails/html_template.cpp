@@ -171,7 +171,28 @@ string Crails::HtmlTemplate::date_field(const string& name, time_t value, std::m
 
   if (value != 0)
     value_stream << put_time(localtime(&value), format.c_str());
-  attrs.merge(map<string,string>{{"type","date"},{"name",name},{"value",value_stream.str()}});
+  return date_field(name, value_stream.str(), attrs);
+}
+
+string Crails::HtmlTemplate::date_field(const string& name, const string& value, map<string, string> attrs) const
+{
+  attrs.merge(map<string,string>{{"type","date"},{"name",name},{"value",value}});
+  return tag("input", attrs);
+}
+
+string Crails::HtmlTemplate::datetime_field(const string& name, time_t value, map<string, string> attrs) const
+{
+  static const string format("%FT%H:%M");
+  stringstream value_stream;
+
+  if (value != 0)
+    value_stream << put_time(localtime(&value), format.c_str());
+  return datetime_field(name, value_stream.str(), attrs);
+}
+
+string Crails::HtmlTemplate::datetime_field(const string& name, const string& value, std::map<std::string,std::string> attrs) const
+{
+  attrs.merge(map<string,string>{{"type","datetime-local"},{"name",name},{"value",value}});
   return tag("input", attrs);
 }
 
