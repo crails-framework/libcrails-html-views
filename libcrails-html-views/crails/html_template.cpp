@@ -84,11 +84,11 @@ static std::string form_link(const HtmlTemplate& tpl, const std::string& url, co
 
   attrs["href"] = url;
   if (confirm_message == attrs.end())
-    attrs["onclick"] = "javascript:" + submit_javascript + ";return false";
+    attrs["onclick"] = "javascript:event.preventDefault();" + submit_javascript + ";return false";
   else
   {
     attrs["data-confirm"] = confirm_message->second;
-    attrs["onclick"] = "javascript:if(confirm(this.dataset.confirm)){" + submit_javascript + '}';
+    attrs["onclick"] = "javascript:event.preventDefault();if(confirm(this.dataset.confirm)){" + submit_javascript + "};return false";
     attrs.erase(confirm_message);
   }
   return tpl.form({{"method",method}, {"action",url}}, [&label, &attrs]() -> std::string
