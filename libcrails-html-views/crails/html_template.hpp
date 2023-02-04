@@ -52,6 +52,7 @@ namespace Crails
     std::string hidden_field(const std::string& name, const std::string& value, const std::map<std::string, std::string> attrs = {}) const;
     std::string text_field(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
     std::string text_area(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
+    std::string mail_field(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
     std::string date_field(const std::string& name, std::time_t value, std::map<std::string, std::string> attrs = {}) const;
     std::string date_field(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
     std::string datetime_field(const std::string& name, std::time_t value, std::map<std::string, std::string> attrs = {}) const;
@@ -59,6 +60,8 @@ namespace Crails
     std::string password_field(const std::string& name, const std::string& value, std::map<std::string, std::string> attrs = {}) const;
     template<typename VALUE> std::string number_field(const std::string& name, VALUE value, std::map<std::string, std::string> attrs = {}) const { attrs.merge(std::map<std::string,std::string>{{"type","number"},{"name",name},{"value",boost::lexical_cast<std::string>(value)}}); return tag("input", attrs); }
     std::string boolean_field(const std::string& name, bool value, std::map<std::string, std::string> attrs = {}) const;
+    std::string upload_field(const std::string& name, std::map<std::string, std::string> attrs = {}) const;
+    std::string multiple_upload_field(const std::string& name, std::map<std::string, std::string> attrs = {}) const;
 
     template<typename VALUE> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, VALUE selected_value, std::map<std::string, std::string> attrs = {}) const
     {

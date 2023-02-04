@@ -158,6 +158,12 @@ string Crails::HtmlTemplate::text_area(const std::string& name, const std::strin
   return tag("textarea", attrs, [&value]() { return html_escape(value); });
 }
 
+string Crails::HtmlTemplate::mail_field(const std::string& name, const std::string& value, std::map<std::string,std::string> attrs) const
+{
+  attrs.merge(map<string,string>{{"type","email"},{"name",name},{"value",value}});
+  return tag("input", attrs);
+}
+
 string Crails::HtmlTemplate::password_field(const std::string& name, const std::string& value, std::map<std::string,std::string> attrs) const
 {
   attrs.merge(map<string,string>{{"type","password"},{"name",name},{"value",value}});
@@ -202,4 +208,16 @@ string Crails::HtmlTemplate::boolean_field(const string& name, bool value, std::
   if (value)
     attrs.emplace("checked", "checked");
   return tag("input", attrs);
+}
+
+string Crails::HtmlTemplate::upload_field(const string& name, std::map<std::string,std::string> attrs) const
+{
+  attrs.merge(map<string,string>{{"type","file"},{"name",name}});
+  return tag("input", attrs);
+}
+
+string Crails::HtmlTemplate::multiple_upload_field(const string& name, std::map<std::string,std::string> attrs) const
+{
+  attrs.merge(map<string,string>{{"multiple",""}});
+  return upload_field(name, attrs);
 }
