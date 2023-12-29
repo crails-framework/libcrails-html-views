@@ -29,7 +29,7 @@ void HtmlRenderer::render_template(const std::string& view, RenderTarget& target
       render_template(layout, target, vars);
     }
     else
-      throw MissingTemplate(layout);
+      throw MissingTemplate(layout, this);
   }
   else
     tpl->second(*this, target, vars);
