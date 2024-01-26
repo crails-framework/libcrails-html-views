@@ -2,17 +2,20 @@
 # define CRAILS_HTML_FORM_BUILDER_HPP
 
 # include "html_template.hpp"
+# include <string_view>
 
 namespace Crails
 {
   class FormBuilderBase
   {
   protected:
-    HtmlTemplate&      html_template;
-    const std::string& scope;
+    HtmlTemplate&          html_template;
+    const std::string_view scope;
   public:
-    FormBuilderBase(HtmlTemplate* parent, const std::string& scope) : html_template(*parent), scope(scope) {}
-    std::string scoped_name(const std::string& name) const { return scope + '[' + name + ']'; }
+    FormBuilderBase(HtmlTemplate* parent, const std::string_view scope) : html_template(*parent), scope(scope) {}
+    FormBuilderBase(HtmlTemplate* parent, const std::string& scope) : html_template(*parent), scope(scope.c_str(), scope.length()) {}
+    FormBuilderBase(HtmlTemplate* parent, const char* scope) : html_template(*parent), scope(scope) {}
+    std::string scoped_name(const std::string& name) const { return std::string(scope) + '[' + name + ']'; }
     std::string label_for(const std::string& name, const std::string& label) const { return label_for(name, [&label]() { return label; }); }
     std::string label_for(const std::string& name) const { return label_for(name, name); }
     std::string label_for(const std::string& name, HtmlTemplate::Yieldable yieldable) const { return html_template.tag("label", {{"for",scoped_name(name)}}, yieldable); }
