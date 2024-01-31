@@ -40,7 +40,7 @@ namespace Crails
     const MODEL& model;
   public:
     FormBuilder(HtmlTemplate* parent, const MODEL& model) : FormBuilderBase(parent, MODEL::scope), model(model) {}
-    template<typename METHOD> std::string hidden_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.hidden_field(scoped_name(name), (model.*method())(), attrs); }
+    template<typename METHOD> std::string hidden_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.hidden_field(scoped_name(name), (model.*method)(), attrs); }
     template<typename METHOD> std::string text_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.text_field(scoped_name(name), (model.*method)(), attrs); }
     template<typename METHOD> std::string text_area(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.text_area(scoped_name(name), (model.*method)(), attrs); }
     template<typename METHOD> std::string mail_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.mail_field(scoped_name(name), (model.*method)(), attrs); }
