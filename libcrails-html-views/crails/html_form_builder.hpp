@@ -15,6 +15,7 @@ namespace Crails
     FormBuilderBase(HtmlTemplate* parent, const std::string_view scope) : html_template(*parent), scope(scope) {}
     FormBuilderBase(HtmlTemplate* parent, const std::string& scope) : html_template(*parent), scope(scope.c_str(), scope.length()) {}
     FormBuilderBase(HtmlTemplate* parent, const char* scope) : html_template(*parent), scope(scope) {}
+    FormBuilderBase(const FormBuilderBase& copy) : html_template(copy.html_template), scope(copy.scope) {}
 
     std::string scoped_name(const std::string& name) const;
     std::string label_for(const std::string& name, const std::string& label) const { return label_for(name, [&label]() { return label; }); }
@@ -41,6 +42,8 @@ namespace Crails
     const MODEL& model;
   public:
     FormBuilder(HtmlTemplate* parent, const MODEL& model) : FormBuilderBase(parent, MODEL::scope), model(model) {}
+    FormBuilder(const FormBuilderBase& source, const MODEL& model) : FormBuilderBase(source), model(model) {}
+
     template<typename METHOD> std::string hidden_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.hidden_field(scoped_name(name), (model.*method)(), attrs); }
     template<typename METHOD> std::string text_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.text_field(scoped_name(name), (model.*method)(), attrs); }
     template<typename METHOD> std::string text_area(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.text_area(scoped_name(name), (model.*method)(), attrs); }
