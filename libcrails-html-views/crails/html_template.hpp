@@ -6,6 +6,7 @@
 # include <functional>
 # include <algorithm>
 # include <set>
+# include <string_view>
 # include <boost/lexical_cast.hpp>
 
 namespace Crails
@@ -21,9 +22,9 @@ namespace Crails
     }
     
     static std::string html_escape(const std::string& data);
-    static std::string tag(const std::string& name, const std::map<std::string, std::string>& attrs);
-    static std::string tag(const std::string& name, const std::map<std::string, std::string>& attrs, Yieldable);
-    static std::string tag(const std::string& name, Yieldable);
+    static std::string tag(const std::string_view name, const std::map<std::string, std::string>& attrs);
+    static std::string tag(const std::string_view name, const std::map<std::string, std::string>& attrs, Yieldable);
+    static std::string tag(const std::string_view name, Yieldable);
     std::string        form(const std::map<std::string, std::string>& attrs, Yieldable) const;
     std::string        link(const std::string& url, std::string label = "", std::map<std::string, std::string> attrs = {}) const;
     std::string        link(const std::string& url, std::map<std::string, std::string> attrs, Yieldable) const;

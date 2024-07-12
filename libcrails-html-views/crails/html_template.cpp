@@ -3,11 +3,20 @@
 #include <sstream>
 #include <regex>
 #include <chrono>
+#include <set>
 #include <ctime> // std::localtime
 #include <iomanip> // std::put_time
 
 using namespace Crails;
 using namespace std;
+
+static const set<string_view> self_closing_tags{
+  "area", "base", "br",
+  "col", "embed", "hr",
+  "img", "input", "link",
+  "meta", "param", "source",
+  "track", "wbr"
+};
 
 string HtmlTemplate::html_escape(const string& data)
 {
@@ -27,17 +36,17 @@ string HtmlTemplate::html_escape(const string& data)
   return buffer;
 }
 
-string HtmlTemplate::tag(const string& name, const map<string, string>& attrs)
+string HtmlTemplate::tag(const string_view name, const map<string, string>& attrs)
 {
   return tag(name, attrs, Yieldable());
 }
 
-string HtmlTemplate::tag(const string& name, Yieldable content)
+string HtmlTemplate::tag(const string_view name, Yieldable content)
 {
   return tag(name, {}, content);
 }
 
-string HtmlTemplate::tag(const string& name, const map<string, string>& attrs, Yieldable content)
+string HtmlTemplate::tag(const string_view name, const map<string, string>& attrs, Yieldable content)
 {
   stringstream html_stream;
 
@@ -53,10 +62,12 @@ string HtmlTemplate::tag(const string& name, const map<string, string>& attrs, Y
     }
     html_stream << '"';
   }
-  html_stream << '>';
   if (content)
-    html_stream << content();
-  html_stream << "</" << name << '>';
+    html_stream << '>' << content() << "</" << name << '>';
+  else if (self_closing_tags.find(name) != self_closing_tags.end())
+    html_stream << "/>";
+  else
+    html_stream << "></" << name << '>';
   return html_stream.str();
 }
 
