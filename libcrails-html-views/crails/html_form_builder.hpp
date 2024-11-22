@@ -31,6 +31,8 @@ namespace Crails
     std::string password_field(const std::string& name, const std::string& value, std::map<std::string,std::string> attrs = {}) const { return html_template.password_field(scoped_name(name), value, attrs); }
     std::string upload_field(const std::string& name, std::map<std::string,std::string> attrs = {}) const { return html_template.upload_field(scoped_name(name)); }
     std::string multiple_upload_field(const std::string& name, std::map<std::string,std::string> attrs = {}) const { return html_template.multiple_upload_field(scoped_name(name)); }
+    template<typename VALUE> std::string i18n_text_field(const std::string& name, const VALUE& value, std::map<std::string,std::string> attrs = {}) const { return html_template.i18n_text_field<VALUE>(name, value, attrs); }
+    template<typename VALUE> std::string i18n_text_area(const std::string& name, const VALUE& value, std::map<std::string,std::string> attrs = {}) const { return html_template.i18n_text_area<VALUE>(name, value, attrs); }
     template<typename VALUE> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, const std::vector<VALUE>& values, std::map<std::string,std::string> attrs = {}) const { return html_template.select_field<VALUE>(scoped_name(name), options, values, attrs); }
     template<typename VALUE> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, VALUE value, std::map<std::string,std::string> attrs = {}) const { return html_template.select_field<VALUE>(scoped_name(name), options, value, attrs); }
   };
@@ -53,6 +55,8 @@ namespace Crails
     template<typename METHOD> std::string boolean_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.boolean_field(scoped_name(name), (model.*method)(), attrs); }
     template<typename METHOD> std::string number_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.number_field(scoped_name(name), (model.*method)(), attrs); }
     template<typename METHOD> std::string password_field(const std::string& name, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.password_field(scoped_name(name), (model.*method)(), attrs); }
+    template<typename VALUE> std::string i18n_text_field(const std::string& name, const VALUE& (MODEL::*method)() const, std::map<std::string,std::string> attrs = {}) const { return html_template.i18n_text_field<VALUE>(scoped_name(name), (model.*method)(), attrs); }
+    template<typename VALUE> std::string i18n_text_area(const std::string& name, const VALUE& (MODEL::*method)() const, std::map<std::string,std::string> attrs = {}) const { return html_template.i18n_text_area<VALUE>(scoped_name(name), (model.*method)(), attrs); }
     template<typename VALUE, typename METHOD> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, METHOD method, std::map<std::string,std::string> attrs = {}) const { return html_template.select_field<VALUE>(scoped_name(name), options, (model.*method)(), attrs); }
 
     // Following is a copy-paste from FormBuilderBase methods, required due to the overload shadowing
@@ -69,6 +73,8 @@ namespace Crails
     std::string password_field(const std::string& name, const std::string& value, std::map<std::string,std::string> attrs = {}) const { return html_template.password_field(scoped_name(name), value, attrs); }
     std::string upload_field(const std::string& name, std::map<std::string,std::string> attrs = {}) const { return html_template.upload_field(scoped_name(name)); }
     std::string multiple_upload_field(const std::string& name, std::map<std::string,std::string> attrs = {}) const { return html_template.multiple_upload_field(scoped_name(name)); }
+    template<typename VALUE> std::string i18n_text_field(const std::string& name, const VALUE& value, std::map<std::string,std::string> attrs = {}) const { return html_template.i18n_text_field<VALUE>(scoped_name(name), value, attrs); }
+    template<typename VALUE> std::string i18n_text_area(const std::string& name, const VALUE& value, std::map<std::string,std::string> attrs = {}) const { return html_template.i18n_text_area<VALUE>(scoped_name(name), value, attrs); }
     template<typename VALUE> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, const std::vector<VALUE>& values, std::map<std::string,std::string> attrs = {}) const { return html_template.select_field<VALUE>(scoped_name(name), options, values, attrs); }
     template<typename VALUE> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, VALUE value, std::map<std::string,std::string> attrs = {}) const { return html_template.select_field<VALUE>(scoped_name(name), options, value, attrs); }
   };

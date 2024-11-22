@@ -64,7 +64,29 @@ namespace Crails
     std::string upload_field(const std::string& name, std::map<std::string, std::string> attrs = {}) const;
     std::string multiple_upload_field(const std::string& name, std::map<std::string, std::string> attrs = {}) const;
 
-    template<typename VALUE> std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, VALUE selected_value, std::map<std::string, std::string> attrs = {}) const
+    template<typename VALUE>
+    std::string i18n_text_field(const std::string& name, const VALUE& value, std::map<std::string, std::string> attrs = {}) const
+    {
+      bool is_localized = value.is_localized();
+
+      attrs["data-localized"] = is_localized ? "1" : "0";
+      if (is_localized)
+        return text_field(name, value.to_json(), attrs);
+      return text_field(name, value.to_string(), attrs);
+    }
+    template<typename VALUE>
+    std::string i18n_text_area(const std::string& name, const VALUE& value, std::map<std::string, std::string> attrs = {}) const
+    {
+      bool is_localized = value.is_localized();
+
+      attrs["data-localized"] = is_localized ? "1" : "0";
+      if (is_localized)
+        return text_area(name, value.to_json(), attrs);
+      return text_area(name, value.to_string(), attrs);
+    }
+
+    template<typename VALUE>
+    std::string select_field(const std::string& name, const std::map<VALUE, std::string>& options, VALUE selected_value, std::map<std::string, std::string> attrs = {}) const
     {
       Yieldable callback;
       std::function<bool(VALUE)> is_selected = [selected_value](VALUE value)
