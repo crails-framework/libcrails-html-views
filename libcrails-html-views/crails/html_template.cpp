@@ -56,9 +56,10 @@ string HtmlTemplate::tag(const string_view name, const map<string, string>& attr
     html_stream << ' ' << attr.first << "=\"";
     for (size_t i = 0 ; i < attr.second.length() ; ++i)
     {
-      if (attr.second[i] == '\\' || attr.second[i] == '"')
-        html_stream << '\\';
-      html_stream << attr.second[i];
+      if (attr.second[i] == '"')
+        html_stream << "&quot;";
+      else
+        html_stream << attr.second[i];
     }
     html_stream << '"';
   }
