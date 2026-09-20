@@ -10,7 +10,7 @@ namespace Crails
   public:
     std::string_view get_name() const override { return "crails/html"; }
     const std::vector<std::string>& get_mimetypes() const override;
-    void render_template(const std::string& view, RenderTarget&, SharedVars& vars) const override;
+    void render_template(const std::string_view view, RenderTarget&, SharedVars& vars) const override;
   };
 }
 

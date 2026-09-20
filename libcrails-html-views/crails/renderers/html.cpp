@@ -12,7 +12,7 @@ const std::vector<std::string>& HtmlRenderer::get_mimetypes() const
   return mimetypes;
 }
 
-void HtmlRenderer::render_template(const std::string& view, RenderTarget& target, SharedVars& vars) const
+void HtmlRenderer::render_template(const std::string_view view, RenderTarget& target, SharedVars& vars) const
 {
   auto   tpl       = templates.find(view);
   string layout    = cast<std::string>(vars, "layout", "");
