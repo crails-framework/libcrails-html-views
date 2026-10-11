@@ -5,11 +5,15 @@ using namespace std;
 
 string FormBuilderBase::scoped_name(const string& name) const
 {
-  size_t index = name.find('[');
+  if (scope.length() > 0)
+  {
+    size_t index = name.find('[');
 
-  if (index == 0)
-    return string(scope) + name;
-  if (index != string::npos)
-    return string(scope) + '[' + name.substr(0, index) + ']' + name.substr(index);
-  return string(scope) + '[' + name + ']';
+    if (index == 0)
+      return string(scope) + name;
+    if (index != string::npos)
+      return string(scope) + '[' + name.substr(0, index) + ']' + name.substr(index);
+    return string(scope) + '[' + name + ']';
+  }
+  return string(scope);
 }
