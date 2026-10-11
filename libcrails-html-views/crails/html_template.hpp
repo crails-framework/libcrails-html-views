@@ -2,6 +2,7 @@
 # define CRAILS_HTML_TEMPLATE_HPP
 
 # include <crails/template.hpp>
+# include <crails/utils/join.hpp>
 # include <map>
 # include <functional>
 # include <algorithm>
@@ -71,9 +72,13 @@ namespace Crails
 
       attrs["data-localized"] = is_localized ? "1" : "0";
       if (is_localized)
+      {
+        attrs["data-locales"] = join(value.available_locales(), ',');
         return text_field(name, value.to_json(), attrs);
+      }
       return text_field(name, value.to_string(), attrs);
     }
+
     template<typename VALUE>
     std::string i18n_text_area(const std::string& name, const VALUE& value, std::map<std::string, std::string> attrs = {}) const
     {
@@ -81,7 +86,10 @@ namespace Crails
 
       attrs["data-localized"] = is_localized ? "1" : "0";
       if (is_localized)
+      {
+        attrs["data-locales"] = join(value.available_locales(), ',');
         return text_area(name, value.to_json(), attrs);
+      }
       return text_area(name, value.to_string(), attrs);
     }
 
